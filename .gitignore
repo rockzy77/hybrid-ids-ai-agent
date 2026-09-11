@@ -1,0 +1,7 @@
+ml/data/
+ml/rf_model.joblib
+__pycache__/
+*.pyc
+.env
+node_modules/
+frontend/dist/
