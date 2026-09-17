@@ -10,7 +10,7 @@ A two-stage hybrid IDS: a Random Forest classifier (trained on CICIDS2017) flags
 │   ├── seed_data.py
 │   ├── reset_alerts.py
 │   └── .env
-├── mls/            Random Forest training (Stage 1)
+├── ml/            Random Forest training (Stage 1)
 │   ├── train_model.py
 │   ├── data/               ← put CICIDS2017 CSVs here (not included)
 │   └── .env
@@ -20,7 +20,7 @@ A two-stage hybrid IDS: a Random Forest classifier (trained on CICIDS2017) flags
 ├── backend/        Flask API tying it all together
 │   ├── app.py
 │   └── .env
-└── frontends/       React + Vite SOC dashboard
+└── frontend/       React + Vite SOC dashboard
     └── src/
 ```
 
@@ -65,17 +65,17 @@ python seed_data.py
 ## 2. Train the Random Forest model (Stage 1)
 
 ```bash
-cd ../mls
+cd ../ml
 pip install pandas numpy scikit-learn imbalanced-learn joblib
 ```
 
-Download the CICIDS2017 CSVs and place them in `mls/data/`, then:
+Download the CICIDS2017 CSVs and place them in `ml/data/`, then:
 
 ```bash
 python train_model.py
 ```
 
-This trains the classifier and writes `rf_model.joblib`, `label_encoder.joblib`, `feature_columns.json`, `metrics.json`, and a `live_traffic_sample.csv` (a held-out sample used to simulate live traffic through the dashboard) into `mls/`.
+This trains the classifier and writes `rf_model.joblib`, `label_encoder.joblib`, `feature_columns.json`, `metrics.json`, and a `live_traffic_sample.csv` (a held-out sample used to simulate live traffic through the dashboard) into `ml/`.
 
 ## 3. Configure the triage agent (Stage 2)
 
@@ -137,19 +137,19 @@ python demo_false_positive.py --url http://localhost:5000 --count 3
 ## 5. Run the frontend
 
 ```bash
-cd ../frontends
+cd ../frontend
 npm install
 npm run dev
 ```
 
-Runs on `http://localhost:5173` and talks to the backend at `http://localhost:5000` by default (override with `VITE_API_BASE_URL` in a `.env` file in `frontends/`).
+Runs on `http://localhost:5173` and talks to the backend at `http://localhost:5000` by default (override with `VITE_API_BASE_URL` in a `.env` file in `frontend/`).
 
 ## Typical run order
 
 1. `database/seed_data.py` (once)
-2. `mls/train_model.py` (once, or whenever you want a fresh live-traffic sample)
+2. `ml/train_model.py` (once, or whenever you want a fresh live-traffic sample)
 3. `backend/app.py` (keep running)
-4. `frontends` (`npm run dev`, keep running)
+4. `frontend` (`npm run dev`, keep running)
 5. Open the dashboard, use "Next Traffic" to pull rows through the pipeline — or run `agent/demo_false_positive.py` for a quick guaranteed demo
 
 ## Notes
