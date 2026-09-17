@@ -10,7 +10,7 @@ A two-stage hybrid IDS: a Random Forest classifier (trained on CICIDS2017) flags
 │   ├── seed_data.py
 │   ├── reset_alerts.py
 │   └── .env
-├── ml/            Random Forest training (Stage 1)
+├── ml/             Random Forest training (Stage 1)
 │   ├── train_model.py
 │   ├── data/               ← put CICIDS2017 CSVs here (not included)
 │   └── .env
@@ -20,8 +20,9 @@ A two-stage hybrid IDS: a Random Forest classifier (trained on CICIDS2017) flags
 ├── backend/        Flask API tying it all together
 │   ├── app.py
 │   └── .env
-└── frontend/       React + Vite SOC dashboard
-    └── src/
+├── frontend/        React + Vite SOC dashboard
+│   └── src/
+└── compute_live_metrics.py   Real accuracy/precision/recall/FPR from triaged alerts
 ```
 
 ## Prerequisites
@@ -144,6 +145,16 @@ npm run dev
 
 Runs on `http://localhost:5173` and talks to the backend at `http://localhost:5000` by default (override with `VITE_API_BASE_URL` in a `.env` file in `frontend/`).
 
+## 6. Compute live evaluation metrics
+
+Once the dashboard has been running for a while (via "Next Traffic" or `agent/demo_false_positive.py`) and has triaged some alerts, run:
+
+```bash
+python compute_live_metrics.py
+```
+
+This reads every completed alert with a known ground-truth label straight from the `alerts` table and prints accuracy, precision, recall, F1-score and false-positive rate for the RF + Agent hybrid pipeline, alongside a workload-reduction figure (the share of RF-flagged alerts the agent correctly cleared as false positives). These are the real numbers used in the dissertation's live-evaluation results (Section 5.2) rather than a static held-out test split. It needs the same `database/.env` credentials as the rest of the stack, so run it from the project root with that file present.
+
 ## Typical run order
 
 1. `database/seed_data.py` (once)
@@ -151,6 +162,7 @@ Runs on `http://localhost:5173` and talks to the backend at `http://localhost:50
 3. `backend/app.py` (keep running)
 4. `frontend` (`npm run dev`, keep running)
 5. Open the dashboard, use "Next Traffic" to pull rows through the pipeline — or run `agent/demo_false_positive.py` for a quick guaranteed demo
+6. `compute_live_metrics.py` once enough alerts have been triaged, to get real accuracy/precision/recall/FPR figures
 
 ## Notes
 
