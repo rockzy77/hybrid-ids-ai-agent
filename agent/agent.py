@@ -18,7 +18,7 @@ DB_CONFIG = {
 
 
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
-CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "claude-sonnet-5")
+CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "claude-haiku-4-5-20251001")
 CLAUDE_MAX_TOKENS = int(os.getenv("CLAUDE_MAX_TOKENS", "500"))
 
 _claude_client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY) if ANTHROPIC_API_KEY else None
